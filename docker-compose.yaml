@@ -20,8 +20,12 @@ services:
       - 80:80
     networks:
       - app-network
+    depends_on:
+      - app-prod
+    profiles:
+      - prod
 
-  app:
+  app-dev:
     build:
       context: ./app
     ports:
@@ -34,6 +38,21 @@ services:
       - app-network
     depends_on:
       - db
+    profiles:
+      - dev
+
+  app-prod:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.prod
+    env_file:
+      - ./app/.env
+    networks:
+      - app-network
+    depends_on:
+      - db
+    profiles:
+      - prod
 
 networks:
   app-network:
